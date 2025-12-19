@@ -324,6 +324,32 @@ st.markdown("""
     color: #000000 !important;
     font-weight: 500;
 }
+/* Sidebar widget containers (selectbox, uploader, sliders) */
+[data-testid="stSidebar"] [data-baseweb="select"] > div {
+    background-color: #E6F2FF !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stFileUploader"] section {
+    background-color: #E6F2FF !important;
+    border: 1px solid #B3D9FF;
+}
+
+/* File uploader drag area */
+[data-testid="stSidebar"] [data-testid="stFileUploader"] div[role="button"] {
+    background-color: #E6F2FF !important;
+    color: #000000 !important;
+}
+
+/* Dropdown text */
+[data-testid="stSidebar"] span {
+    color: #000000 !important;
+}
+
+/* Remove dark shadows */
+[data-testid="stSidebar"] * {
+    box-shadow: none !important;
+}
+
 
 /* Metrics */
 [data-testid="stMetric"] label,
@@ -520,5 +546,6 @@ if qasm_text is not None:
         st.warning("Please ensure the QASM is valid and that your environment includes qiskit-aer (`pip install qiskit-aer`).")
 else:
     st.info("Please select an example or upload a .qasm file using the sidebar to begin.")
+
 
 
