@@ -29,20 +29,25 @@ from qiskit.qasm3 import dumps
 # ==================================================
 # UI THEME (PEACH)
 # ==================================================
-st.set_page_config(page_title="Quantum Visualizer", layout="wide")
-
 st.markdown("""
 <style>
+/* Main app background */
 .stApp {
-    background-color: #FFE5B4;
+    background-color: #FFFFFF;  /* White */
 }
+
+/* Sidebar background */
 [data-testid="stSidebar"] {
-    background-color: #FFDAB9;
+    background-color: #E6F2FF;  /* Light blue */
+}
+
+/* Improve text contrast */
+[data-testid="stSidebar"] * {
+    color: #000000;
 }
 </style>
 """, unsafe_allow_html=True)
 
-st.title("⚛️ Quantum Circuit Visualizer")
 
 # ==================================================
 # DEFAULT EXAMPLES
@@ -244,3 +249,4 @@ if qasm_text:
 
 else:
     st.info("Select an example circuit or upload a QASM file from the sidebar.")
+
