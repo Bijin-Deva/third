@@ -316,12 +316,12 @@ st.markdown("""
 [data-testid="stSidebar"] h1,
 [data-testid="stSidebar"] h2,
 [data-testid="stSidebar"] h3 {
-    color: #000000 !important;
+    color: #E6F2FF !important;
 }
 
 /* Checkbox label fix (THIS FIXES "Enable Noise") */
 [data-testid="stCheckbox"] label {
-    color: #000000 !important;
+    color: #E6F2FF !important;
     font-weight: 500;
 }
 /* Sidebar widget containers (selectbox, uploader, sliders) */
@@ -546,6 +546,7 @@ if qasm_text is not None:
         st.warning("Please ensure the QASM is valid and that your environment includes qiskit-aer (`pip install qiskit-aer`).")
 else:
     st.info("Please select an example or upload a .qasm file using the sidebar to begin.")
+
 
 
 
