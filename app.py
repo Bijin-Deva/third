@@ -284,23 +284,32 @@ st.set_page_config(page_title="Quantum Circuit Visualizer", layout="wide")
 
 st.markdown("""
 <style>
-/* ============================= */
-/* Main Page */
-/* ============================= */
+/* Main background */
 .stApp {
     background-color: #FFFFFF;
+    background-attachment: fixed;
+    background-size: cover;
 }
 
-/* ============================= */
-/* Sidebar Background */
-/* ============================= */
+/* Header */
+[data-testid="stHeader"] {
+    background-color: transparent;
+}
+
+/* Main text */
+[data-testid="stAppViewContainer"] h1,
+[data-testid="stAppViewContainer"] h2,
+[data-testid="stAppViewContainer"] h3,
+[data-testid="stAppViewContainer"] .stMarkdown p {
+    color: #000000 !important;
+}
+
+/* Sidebar background */
 [data-testid="stSidebar"] {
-    background-color: #E6F2FF !important;  /* Light Blue */
+    background-color: #E6F2FF; /* Light blue */
 }
 
-/* ============================= */
-/* Sidebar Text */
-/* ============================= */
+/* Sidebar text (IMPORTANT FIX) */
 [data-testid="stSidebar"] label,
 [data-testid="stSidebar"] span,
 [data-testid="stSidebar"] p,
@@ -310,45 +319,27 @@ st.markdown("""
     color: #000000 !important;
 }
 
-/* ============================= */
-/* Selectbox (Dropdown) */
-/* ============================= */
-[data-testid="stSidebar"] [data-baseweb="select"] > div {
-    background-color: #E6F2FF !important;
-    border: 1px solid #B3D9FF;
+/* Checkbox label fix (THIS FIXES "Enable Noise") */
+[data-testid="stCheckbox"] label {
+    color: #000000 !important;
+    font-weight: 500;
 }
 
-/* Dropdown selected text */
-[data-testid="stSidebar"] [data-baseweb="select"] span {
+/* Metrics */
+[data-testid="stMetric"] label,
+[data-testid="stMetric"] div {
     color: #000000 !important;
 }
 
-/* ============================= */
-/* File Uploader */
-/* ============================= */
-[data-testid="stSidebar"] [data-testid="stFileUploader"] section {
-    background-color: #E6F2FF !important;
-    border: 1px dashed #8CBFFF;
+/* Info boxes */
+[data-testid="stInfo"] {
+    background-color: rgba(173, 216, 230, 0.3);
 }
 
-/* Drag & Drop area */
-[data-testid="stSidebar"] [data-testid="stFileUploader"] div[role="button"] {
-    background-color: #E6F2FF !important;
-    color: #000000 !important;
-}
-
-/* Browse files button */
-[data-testid="stSidebar"] button {
-    background-color: #D6EBFF !important;
-    color: #000000 !important;
-    border-radius: 6px;
-}
-
-/* ============================= */
-/* Remove dark shadows */
-/* ============================= */
-[data-testid="stSidebar"] * {
-    box-shadow: none !important;
+/* Expander titles */
+[data-testid="stExpander"] summary {
+    color: #003366 !important;
+    font-weight: bold;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -530,6 +521,7 @@ if qasm_text is not None:
         st.warning("Please ensure the QASM is valid and that your environment includes qiskit-aer (`pip install qiskit-aer`).")
 else:
     st.info("Please select an example or upload a .qasm file using the sidebar to begin.")
+
 
 
 
