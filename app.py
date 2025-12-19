@@ -284,31 +284,66 @@ st.set_page_config(page_title="Quantum Circuit Visualizer", layout="wide")
 
 st.markdown("""
 <style>
+/* Main background */
 .stApp {
-    background-color: #FFFBEA; /* Pale Yellow/Cream Background */
+    background-color: #FFFFFF;
     background-attachment: fixed;
     background-size: cover;
 }
-[data-testid="stHeader"] { background-color: transparent; }
+
+/* Header */
+[data-testid="stHeader"] {
+    background-color: transparent;
+}
+
+/* Main text */
 [data-testid="stAppViewContainer"] h1,
 [data-testid="stAppViewContainer"] h2,
 [data-testid="stAppViewContainer"] h3,
-[data-testid="stAppViewContainer"] .stMarkdown p { color: #333333 !important; } /* Dark text */
-[data-testid="stSidebar"] { background-color: #FAF0E6; } /* Light cream/linen sidebar */
-[data-testid="stSidebar"] .stMarkdown,
+[data-testid="stAppViewContainer"] .stMarkdown p {
+    color: #000000 !important;
+}
+
+/* Sidebar background */
+[data-testid="stSidebar"] {
+    background-color: #E6F2FF; /* Light blue */
+}
+
+/* Sidebar text (IMPORTANT FIX) */
 [data-testid="stSidebar"] label,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] p,
 [data-testid="stSidebar"] h1,
 [data-testid="stSidebar"] h2,
-[data-testid="stSidebar"] h3 { color: #333333 !important; } /* Dark text */
+[data-testid="stSidebar"] h3 {
+    color: #000000 !important;
+}
+
+/* Checkbox label fix (THIS FIXES "Enable Noise") */
+[data-testid="stCheckbox"] label {
+    color: #000000 !important;
+    font-weight: 500;
+}
+
+/* Metrics */
 [data-testid="stMetric"] label,
-[data-testid="stMetric"] div { color: #333333 !important; } /* Dark text */
-[data-testid="stInfo"] { background-color: rgba(240, 230, 140, 0.3); } /* Light yellow info box */
+[data-testid="stMetric"] div {
+    color: #000000 !important;
+}
+
+/* Info boxes */
+[data-testid="stInfo"] {
+    background-color: rgba(173, 216, 230, 0.3);
+}
+
+/* Expander titles */
 [data-testid="stExpander"] summary {
-    color: #004E98 !important; /* Dark readable blue */
+    color: #003366 !important;
     font-weight: bold;
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 st.title("⚛️ Quantum Circuit Visualizer")
 st.markdown("Choose an example or upload a **`.qasm`** file to visualize a quantum circuit.")
@@ -485,4 +520,5 @@ if qasm_text is not None:
         st.warning("Please ensure the QASM is valid and that your environment includes qiskit-aer (`pip install qiskit-aer`).")
 else:
     st.info("Please select an example or upload a .qasm file using the sidebar to begin.")
+
 
