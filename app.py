@@ -12,6 +12,14 @@ from qiskit_aer import Aer
 import plotly.graph_objects as go
 import io
 import matplotlib.pyplot as plt
+from qiskit_aer.noise import (
+    NoiseModel,
+    depolarizing_error,
+    amplitude_damping_error,
+    phase_damping_error,
+    ReadoutError
+)
+
 
 # --- UPDATED: Examples now include a 'note' for the UI ---
 EXAMPLES = {
@@ -116,6 +124,38 @@ def bloch_vector_from_rho(rho2x2: np.ndarray):
 def purity_from_rho(rho2x2: np.ndarray):
     """Calculates the purity of the state from its density matrix."""
     return float(np.real(np.trace(rho2x2 @ rho2x2)))
+
+def build_noise_model():
+    noise = NoiseModel()
+
+    if depol_p > 0:
+        noise.add_all_qubit_quantum_error(
+            depolarizing_error(depol_p, 1),
+            ['h', 'x', 'rx', 'ry', 'rz']
+        )
+
+    if decay_f > 0:
+        noise.add_all_qubit_quantum_error(
+            amplitude_damping_error(decay_f),
+            ['h', 'x', 'rx', 'ry', 'rz']
+        )
+
+    if deco_g > 0:
+        noise.add_all_qubit_quantum_error(
+            phase_damping_error(deco_g),
+            ['h', 'x', 'rx', 'ry', 'rz']
+        )
+
+    if tsp_01 > 0 or tsp_10 > 0:
+        noise.add_all_qubit_readout_error(
+            ReadoutError([
+                [1 - tsp_01, tsp_01],
+                [tsp_10, 1 - tsp_10]
+            ])
+        )
+
+    return noise
+
 
 # --- Visualization Function ---
 
@@ -294,6 +334,16 @@ elif choice == "Upload my own...":
 
 st.sidebar.title("Simulation Controls")
 num_shots = st.sidebar.slider('Number of Shots (for measurement)', 100, 8192, 1024) # <<< THIS LINE WAS CUT OFF
+st.sidebar.title("Quantum Noise")
+
+enable_noise = st.sidebar.checkbox("Enable Noise", value=False)
+
+with st.sidebar.expander("Noise Parameters"):
+    depol_p = st.slider("Depolarization", 0.0, 0.3, 0.0)
+    decay_f = st.slider("Amplitude Damping (T1)", 0.0, 0.3, 0.0)
+    deco_g = st.slider("Phase Damping (T2)", 0.0, 0.3, 0.0)
+    tsp_01 = st.slider("|0⟩ → |1⟩ (Readout)", 0.0, 0.3, 0.0)
+    tsp_10 = st.slider("|1⟩ → |0⟩ (Readout)", 0.0, 0.3, 0.0)
 
 # --- Main app logic ---
 if qasm_text is not None:
@@ -354,7 +404,13 @@ if qasm_text is not None:
 
             if qc_for_measurement.num_clbits > 0:
                 qasm_backend = Aer.get_backend('qasm_simulator')
-                qasm_job = qasm_backend.run(qc_for_measurement, shots=num_shots)
+                noise_model = build_noise_model() if enable_noise else None
+                qasm_job = qasm_backend.run(
+                qc_for_measurement,
+                shots=num_shots,
+                noise_model=noise_model
+                )
+
                 counts = qasm_job.result().get_counts()
                 sorted_counts = dict(sorted(counts.items()))
 
@@ -429,3 +485,4 @@ if qasm_text is not None:
         st.warning("Please ensure the QASM is valid and that your environment includes qiskit-aer (`pip install qiskit-aer`).")
 else:
     st.info("Please select an example or upload a .qasm file using the sidebar to begin.")
+
