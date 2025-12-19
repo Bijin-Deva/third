@@ -33,7 +33,7 @@ st.markdown("""
 <style>
 /* Main app background */
 .stApp {
-    background-color: #FFFFFF;  /* White */
+    background-color: #E6F2FF;  /* White */
 }
 
 /* Sidebar background */
@@ -249,4 +249,5 @@ if qasm_text:
 
 else:
     st.info("Select an example circuit or upload a QASM file from the sidebar.")
+
 
