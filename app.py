@@ -117,7 +117,7 @@ def noisy_state_density_matrix(qc: QuantumCircuit, noise_model: NoiseModel) -> D
     )
 
     qc_noisy = qc.copy()
-    qc_noisy = remove_final_measurements(qc_noisy)
+    qc_noisy = remove_final_measurements_if_any(qc_noisy)
     qc_noisy.save_density_matrix()
 
     result = sim.run(qc_noisy).result()
@@ -548,4 +548,5 @@ if qasm_text is not None:
         st.warning("Please ensure the QASM is valid and that your environment includes qiskit-aer (`pip install qiskit-aer`).")
 else:
     st.info("Please select an example or upload a .qasm file using the sidebar to begin.")
+
 
