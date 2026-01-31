@@ -411,6 +411,23 @@ if qasm_text is not None:
         qc_vis = qc.copy()
         qc_vis.barrier()
         qc_vis.measure_all()
+        custom_style = {
+            "textcolor": "#333333",
+            "gatetextcolor": "#000000",
+            "labelcolor": "#333333",
+            "linecolor": "#888888",
+            "creglinecolor": "#888888",
+            "gatefacecolor": "#ADD8E6",
+            "barrierfacecolor": "#AAAAAA",
+            "fontsize": 10,
+            "subfontsize": 9,
+            "displaycolor": {
+                "h": "#87CEEB",
+                "cx": "#87CEEB",
+                "x": "#F08080",
+                "measure": "#808080",
+            }
+        }
         
         # ---- Let Qiskit create the figure (NO ax, NO plt.subplots) ----
         fig = qc_vis.draw(
@@ -525,6 +542,7 @@ if qasm_text is not None:
         st.warning("Please ensure the QASM is valid and that your environment includes qiskit-aer (`pip install qiskit-aer`).")
 else:
     st.info("Please select an example or upload a .qasm file using the sidebar to begin.")
+
 
 
 
