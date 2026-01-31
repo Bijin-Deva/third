@@ -409,8 +409,8 @@ if qasm_text is not None:
         
         # ---- Use finalized circuit for visualization ----
         qc_vis = qc.copy()
-        qc_vis.barrier()
-        qc_vis.measure_all()
+        #qc_vis.barrier()
+        #qc_vis.measure_all()
         custom_style = {
             "textcolor": "#333333",
             "gatetextcolor": "#000000",
@@ -542,6 +542,7 @@ if qasm_text is not None:
         st.warning("Please ensure the QASM is valid and that your environment includes qiskit-aer (`pip install qiskit-aer`).")
 else:
     st.info("Please select an example or upload a .qasm file using the sidebar to begin.")
+
 
 
 
