@@ -406,45 +406,22 @@ if qasm_text is not None:
 
         st.header("Quantum Circuit")
         st.markdown("This diagram shows the gates and measurements as defined in the QASM file.")
-
-        # ##################################################
-        # # --- MATPLOTLIB STYLE UPDATED FOR LIGHT THEME ---
-        # ##################################################
-        custom_style = {
-            "textcolor": "#333333",       # Dark text
-            "gatetextcolor": "#000000",      # Black gate text
-            "labelcolor": "#333333",        # Dark label
-            "linecolor": "#888888",         # Grey lines
-            "creglinecolor": "#888888",      # Grey classical lines
-            "gatefacecolor": "#ADD8E6",     # Light Blue gate background
-            "barrierfacecolor": "#AAAAAA",
-            "fontsize": 10,
-            "displaycolor": {
-                'h': '#87CEEB',         # Sky Blue
-                'cx': '#87CEEB',        # Sky Blue
-                'x': '#F08080',         # Light Coral
-                'measure': '#808080',
-            },
-            "dpi": 200,
-            "margin": [0.25, 0.1, 0.1, 0.1],
-            "qreg_textalign": "left",
-            "creg_textalign": "left"
-        }
-        # ##################################################
-
-        fig, ax = plt.subplots(figsize=(8, max(2.5, qc.num_qubits * 0.6)))
-        fig.patch.set_alpha(0.0)
-        ax.patch.set_alpha(0.0)
-        ax.axis('off')
-
-        qc.draw(
-            output='mpl',
+        
+        # ---- Use finalized circuit for visualization ----
+        qc_vis = qc.copy()
+        qc_vis.barrier()
+        qc_vis.measure_all()
+        
+        # ---- Let Qiskit create the figure (NO ax, NO plt.subplots) ----
+        fig = qc_vis.draw(
+            output="mpl",
             style=custom_style,
-            ax=ax,
-            scale=0.7,
+            scale=0.8,
+            fold=-1,
             initial_state=True
         )
-        st.pyplot(fig)
+        
+        st.pyplot(fig, clear_figure=True)
 
         # --- Measurement Simulation ---
         with st.spinner("Simulating measurements..."):
@@ -548,5 +525,6 @@ if qasm_text is not None:
         st.warning("Please ensure the QASM is valid and that your environment includes qiskit-aer (`pip install qiskit-aer`).")
 else:
     st.info("Please select an example or upload a .qasm file using the sidebar to begin.")
+
 
 
