@@ -527,8 +527,8 @@ if qasm_text is not None:
 
                         fig_bloch = plot_bloch_sphere(bx, by, bz, title=f"Qubit {i}")
                         st.plotly_chart(fig_bloch, use_container_width=True)
-
                         st.metric(label=f"Purity (Qubit {i})", value=f"{p:.4f}")
+                        
                         with st.expander(f"Details for Qubit {i}"):
                             st.markdown(f"**Bloch Vector:** `({bx:.3f}, {by:.3f}, {bz:.3f})`")
                             st.markdown("Reduced Density Matrix:")
@@ -541,6 +541,7 @@ if qasm_text is not None:
         st.warning("Please ensure the QASM is valid and that your environment includes qiskit-aer (`pip install qiskit-aer`).")
 else:
     st.info("Please select an example or upload a .qasm file using the sidebar to begin.")
+
 
 
 
