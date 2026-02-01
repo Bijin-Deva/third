@@ -143,6 +143,39 @@ def purity_from_rho(rho2x2: np.ndarray):
     """Calculates the purity of the state from its density matrix."""
     return float(np.real(np.trace(rho2x2 @ rho2x2)))
 
+def format_quantum_state_equation(purity, x, y, z, tol=1e-6):
+    # ---- MIXED STATE ----
+    if purity < 0.99:
+        return (
+            r"\rho = \frac{1}{2}\left("
+            r"I + "
+            rf"{x:.3f}\sigma_x + "
+            rf"{y:.3f}\sigma_y + "
+            rf"{z:.3f}\sigma_z"
+            r"\right)"
+        )
+
+    # ---- PURE BASIS STATES ----
+    if abs(z - 1.0) < tol:
+        return r"|\psi\rangle = |0\rangle"
+
+    if abs(z + 1.0) < tol:
+        return r"|\psi\rangle = |1\rangle"
+
+    # ---- GENERAL PURE STATE ----
+    theta = np.arccos(np.clip(z, -1.0, 1.0))
+    phi = np.arctan2(y, x)
+
+    alpha = np.cos(theta / 2)
+    beta = np.sin(theta / 2)
+
+    return (
+        r"|\psi\rangle = "
+        rf"{alpha:.3f}|0\rangle + "
+        rf"e^{{i\phi}}\,{beta:.3f}|1\rangle"
+    )
+
+
 def build_noise_model():
     noise = NoiseModel()
 
@@ -524,11 +557,13 @@ if qasm_text is not None:
                         bx, by, bz = bloch_vector_from_rho(rho)
                         p = purity_from_rho(rho)
 
-
                         fig_bloch = plot_bloch_sphere(bx, by, bz, title=f"Qubit {i}")
                         st.plotly_chart(fig_bloch, use_container_width=True)
                         st.metric(label=f"Purity (Qubit {i})", value=f"{p:.4f}")
-                        
+                        state_eq = format_quantum_state_equation(p, bx, by, bz)
+                        st.markdown(f"**Reduced State Equation (Qubit q{i}):**")
+                        st.latex(state_eq)
+
                         with st.expander(f"Details for Qubit {i}"):
                             st.markdown(f"**Bloch Vector:** `({bx:.3f}, {by:.3f}, {bz:.3f})`")
                             st.markdown("Reduced Density Matrix:")
@@ -541,6 +576,7 @@ if qasm_text is not None:
         st.warning("Please ensure the QASM is valid and that your environment includes qiskit-aer (`pip install qiskit-aer`).")
 else:
     st.info("Please select an example or upload a .qasm file using the sidebar to begin.")
+
 
 
 
