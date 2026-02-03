@@ -546,28 +546,30 @@ if qasm_text is not None:
             st.markdown("Below is the analysis for each individual qubit after tracing out all others.")
 
             if qc.num_qubits > 0:
-                cols = st.columns(qc.num_qubits)
-                for i in range(qc.num_qubits):
-                    with cols[i]:
-                        if enable_noise:
-                            rho = partial_trace(full_dm, [q for q in range(qc.num_qubits) if q != i]).data
-                        else:
-                            rho = reduced_density_for_qubit(state, i)
-                        
-                        bx, by, bz = bloch_vector_from_rho(rho)
-                        p = purity_from_rho(rho)
-
-                        fig_bloch = plot_bloch_sphere(bx, by, bz, title=f"Qubit {i}")
-                        st.plotly_chart(fig_bloch, use_container_width=True)
-                        st.metric(label=f"Purity (Qubit {i})", value=f"{p:.4f}")
-                        state_eq = format_quantum_state_equation(p, bx, by, bz)
-                        st.markdown(f"**Reduced State Equation (Qubit q{i}):**")
-                        st.latex(state_eq)
-
-                        with st.expander(f"Details for Qubit {i}"):
-                            st.markdown(f"**Bloch Vector:** `({bx:.3f}, {by:.3f}, {bz:.3f})`")
-                            st.markdown("Reduced Density Matrix:")
-                            st.dataframe(np.round(rho, 3))
+                num_per_row = 3
+                for row_start in range(0, qc.num_qubits, num_per_row):
+                    cols = st.columns(num_per_row)
+                    for i in range(qc.num_qubits):
+                        with cols[i]:
+                            if enable_noise:
+                                rho = partial_trace(full_dm, [q for q in range(qc.num_qubits) if q != i]).data
+                            else:
+                                rho = reduced_density_for_qubit(state, i)
+                            
+                            bx, by, bz = bloch_vector_from_rho(rho)
+                            p = purity_from_rho(rho)
+    
+                            fig_bloch = plot_bloch_sphere(bx, by, bz, title=f"Qubit {i}")
+                            st.plotly_chart(fig_bloch, use_container_width=True)
+                            st.metric(label=f"Purity (Qubit {i})", value=f"{p:.4f}")
+                            state_eq = format_quantum_state_equation(p, bx, by, bz)
+                            st.markdown(f"**Reduced State Equation (Qubit q{i}):**")
+                            st.latex(state_eq)
+    
+                            with st.expander(f"Details for Qubit {i}"):
+                                st.markdown(f"**Bloch Vector:** `({bx:.3f}, {by:.3f}, {bz:.3f})`")
+                                st.markdown("Reduced Density Matrix:")
+                                st.dataframe(np.round(rho, 3))
             else:
                 st.info("No qubits in the circuit to analyze.")
 
@@ -576,6 +578,7 @@ if qasm_text is not None:
         st.warning("Please ensure the QASM is valid and that your environment includes qiskit-aer (`pip install qiskit-aer`).")
 else:
     st.info("Please select an example or upload a .qasm file using the sidebar to begin.")
+
 
 
 
