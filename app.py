@@ -539,45 +539,62 @@ if qasm_text is not None:
             if enable_noise:
                 noise_model = build_noise_model()
                 full_dm = noisy_state_density_matrix(qc, noise_model)
+                total_qubits = full_dm.num_qubits   # ✅ IMPORTANT
             else:
                 state = statevector_from_circuit(qc)
-
+                total_qubits = state.num_qubits     # ✅ IMPORTANT
+        
             st.header("Qubit State Analysis")
             st.markdown("Below is the analysis for each individual qubit after tracing out all others.")
-
-            if qc.num_qubits > 0:
+        
+            if total_qubits > 0:
                 num_per_row = 3
-                for row_start in range(0, qc.num_qubits, num_per_row):
+        
+                for row_start in range(0, total_qubits, num_per_row):
                     cols = st.columns(num_per_row)
-                    for i in range(qc.num_qubits):
-                        with cols[i]:
+        
+                    for col_idx, i in enumerate(
+                        range(row_start, min(row_start + num_per_row, total_qubits))
+                    ):
+                        with cols[col_idx]:
                             if enable_noise:
-                                rho = partial_trace(full_dm, [q for q in range(qc.num_qubits) if q != i]).data
+                                trace_out = [j for j in range(total_qubits) if j != i]
+                                rho = partial_trace(full_dm, trace_out).data
                             else:
                                 rho = reduced_density_for_qubit(state, i)
-                            
+        
                             bx, by, bz = bloch_vector_from_rho(rho)
                             p = purity_from_rho(rho)
-    
+        
                             fig_bloch = plot_bloch_sphere(bx, by, bz, title=f"Qubit {i}")
-                            st.plotly_chart(fig_bloch, use_container_width=True)
+                            st.plotly_chart(
+                                fig_bloch,
+                                use_container_width=True,
+                                key=f"bloch_qasm_{i}"
+                            )
+        
                             st.metric(label=f"Purity (Qubit {i})", value=f"{p:.4f}")
+        
                             state_eq = format_quantum_state_equation(p, bx, by, bz)
                             st.markdown(f"**Reduced State Equation (Qubit q{i}):**")
                             st.latex(state_eq)
-    
+        
                             with st.expander(f"Details for Qubit {i}"):
-                                st.markdown(f"**Bloch Vector:** `({bx:.3f}, {by:.3f}, {bz:.3f})`")
+                                st.markdown(
+                                    f"**Bloch Vector:** `({bx:.3f}, {by:.3f}, {bz:.3f})`"
+                                )
                                 st.markdown("Reduced Density Matrix:")
                                 st.dataframe(np.round(rho, 3))
             else:
                 st.info("No qubits in the circuit to analyze.")
+
 
     except Exception as e:
         st.error(f"An error occurred while processing the QASM file: {e}")
         st.warning("Please ensure the QASM is valid and that your environment includes qiskit-aer (`pip install qiskit-aer`).")
 else:
     st.info("Please select an example or upload a .qasm file using the sidebar to begin.")
+
 
 
 
